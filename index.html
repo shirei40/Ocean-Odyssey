@@ -196,6 +196,7 @@
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+            flex-direction: column;
         }
 
         /* Guild Card Styles */
@@ -304,6 +305,9 @@
         var bets = {};
         var totalFeedThisRound = 0;
         var currentSelectedBet = 100;
+        var roundActive = false;
+        var countdownInterval = null;
+        var timeLeft = 30;
 
         var animals = [
             { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45 },
@@ -317,6 +321,7 @@
         ];
 
         function setBetAmount(amount) {
+            if (roundActive) return;
             currentSelectedBet = amount;
             document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('active'));
             if (amount === 1) document.getElementById('bet-1').classList.add('active');
@@ -340,13 +345,16 @@
             }
         }
 
-        function initGrid() {
+        function initGrid(highlightName = null) {
             var grid = document.getElementById("animal-grid");
             grid.innerHTML = "";
             animals.forEach(function(anim) {
                 var fed = bets[anim.name] || 0;
                 var div = document.createElement("div");
                 div.className = "animal-card";
+                if (anim.name === highlightName) {
+                    div.classList.add("highlight");
+                }
                 div.onclick = function() { feedAnimal(anim.name); };
                 div.innerHTML = `
                     ${fed > 0 ? `<div class="fed-badge">${fed.toLocaleString()}</div>` : ''}
@@ -359,6 +367,7 @@
         }
 
         function feedAnimal(name) {
+            if (roundActive) return;
             if (biscuits < currentSelectedBet) {
                 alert("Not enough biscuits!");
                 return;
@@ -370,6 +379,7 @@
         }
 
         function feedGroup(type) {
+            if (roundActive) return;
             var matching = animals.filter(a => a.type === type);
             var totalCost = matching.length * currentSelectedBet;
             if (biscuits < totalCost) {
@@ -386,7 +396,7 @@
 
         function updateUI() {
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
-            document.getElementById("perform-btn").disabled = totalFeedThisRound === 0;
+            document.getElementById("perform-btn").disabled = totalFeedThisRound === 0 || roundActive;
             initGrid();
         }
 
@@ -411,10 +421,14 @@
         }
 
         function startPerformance() {
-            if (totalFeedThisRound === 0) return;
+            if (totalFeedThisRound === 0 || roundActive) return;
+            roundActive = true;
+            if (countdownInterval) clearInterval(countdownInterval);
+
             var btn = document.getElementById("perform-btn");
             var resultText = document.getElementById("result-text");
             btn.disabled = true;
+            resultText.innerHTML = "🎬 The stage is performing...";
 
             var cards = document.querySelectorAll(".animal-card");
             var step = 0;
@@ -426,16 +440,17 @@
                 step++;
                 if (step >= 14) {
                     clearInterval(interval);
-                    resolveStage(cards);
+                    resolveStage();
                 }
             }, 90);
         }
 
-        function resolveStage(cards) {
+        function resolveStage() {
             var winIdx = Math.floor(Math.random() * animals.length);
             var winner = animals[winIdx];
-            cards.forEach(c => c.classList.remove("highlight"));
-            cards[winIdx].classList.add("highlight");
+            
+            // Re-render grid to highlight the winner while keeping current bets visible
+            initGrid(winner.name);
 
             var userBet = bets[winner.name] || 0;
             var resultText = document.getElementById("result-text");
@@ -443,18 +458,36 @@
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 30s</span>`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed on this creature. Try again!`;
+                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed.<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 30s</span>`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
-            // Immediately clear all bets and round tracking counters
+            document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
+
+            // Start 30-second countdown timer
+            timeLeft = 30;
+            countdownInterval = setInterval(function() {
+                timeLeft--;
+                var timerSpan = document.getElementById("timer-text");
+                if (timerSpan) {
+                    timerSpan.innerText = `Next round auto-resets in ${timeLeft}s`;
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    resetRound();
+                }
+            }, 1000);
+        }
+
+        function resetRound() {
+            if (countdownInterval) clearInterval(countdownInterval);
             bets = {};
             totalFeedThisRound = 0;
-            
-            // Refresh balance, clear cards' badge markers, and re-enable button states for the next round
+            roundActive = false;
+            document.getElementById("result-text").innerText = "Place bets and trigger the performance stage!";
             updateUI();
         }
 

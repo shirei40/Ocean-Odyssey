@@ -75,11 +75,11 @@
             padding: 10px 14px;
             border-radius: 8px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 12px;
             border: 1px solid #334155;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         .balance-val { color: #facc15; font-weight: bold; }
 
@@ -231,7 +231,6 @@
 
         <div class="wallet-panel">
             <span>🍪 Biscuits: <span id="biscuit-balance" class="balance-val">50,000</span></span>
-            <span>🧩 Fragments: <span id="fragment-count" class="balance-val">0</span></span>
         </div>
 
         <!-- Navigation Tabs -->
@@ -300,7 +299,6 @@
         } catch (e) {}
 
         var biscuits = 50000;
-        var fragments = 0;
         var guildTotalPool = 1200;
         var guildGoal = 50000;
         var bets = {};
@@ -388,7 +386,6 @@
 
         function updateUI() {
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
-            document.getElementById("fragment-count").innerText = fragments.toLocaleString();
             document.getElementById("perform-btn").disabled = totalFeedThisRound === 0;
             initGrid();
         }
@@ -444,16 +441,14 @@
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Syndicate bonus applied. Payout: <b>+${payout.toLocaleString()}</b>`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                var earnedFrags = Math.max(1, Math.floor(totalFeedThisRound / 1000));
-                fragments += earnedFrags;
-                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> Missed bet. Earned <b>${earnedFrags}</b> puzzle fragments.`;
+                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed on this creature. Try again!`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
-            // Reset all bets back to 0 for the next round
+            // Reset all bets completely to 0 and re-enable for a new round
             totalFeedThisRound = 0;
             bets = {};
             updateUI();

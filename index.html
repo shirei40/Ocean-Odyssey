@@ -438,6 +438,8 @@
             cards[winIdx].classList.add("highlight");
 
             var userBet = bets[winner.name] || 0;
+            var resultText = document.getElementById("result-text");
+
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
@@ -448,9 +450,11 @@
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
-            // Reset all bets completely to 0 and re-enable for a new round
-            totalFeedThisRound = 0;
+            // Immediately clear all bets and round tracking counters
             bets = {};
+            totalFeedThisRound = 0;
+            
+            // Refresh balance, clear cards' badge markers, and re-enable button states for the next round
             updateUI();
         }
 

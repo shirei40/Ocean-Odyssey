@@ -83,6 +83,32 @@
         }
         .balance-val { color: #facc15; font-weight: bold; }
 
+        /* Bet Amount Selector */
+        .bet-selector {
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .bet-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+        .bet-btn.active {
+            background: #0284c7;
+        }
+
         /* Group Benchmarks */
         .group-grid {
             display: grid;
@@ -125,8 +151,8 @@
             box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
             transform: scale(1.05);
         }
-        .animal-emoji { font-size: 1.6rem; display: block; margin-bottom: 2px; }
-        .animal-name { font-size: 0.65rem; color: #cbd5e1; }
+        .animal-emoji { font-size: 1.5rem; display: block; margin-bottom: 2px; }
+        .animal-name { font-size: 0.58rem; color: #cbd5e1; word-break: break-word; }
         .animal-mult { font-size: 0.6rem; color: #4ade80; font-weight: bold; }
         .fed-badge {
             position: absolute;
@@ -200,7 +226,7 @@
         <div class="subtitle">Deep Sea Carnival & Guild Co-op</div>
 
         <div class="wallet-panel">
-            <span>🍪 Biscuits: <span id="biscuit-balance" class="balance-val">1,000</span></span>
+            <span>🍪 Biscuits: <span id="biscuit-balance" class="balance-val">50,000</span></span>
             <span>🧩 Fragments: <span id="fragment-count" class="balance-val">0</span></span>
         </div>
 
@@ -212,14 +238,24 @@
 
         <!-- TAB 1: CARNIVAL STAGE -->
         <div id="tab-carnival" class="tab-content active">
-            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom: 6px;">Feed Predators or Dwellers (10 Biscuits/click):</div>
+            <div class="bet-selector">
+                <span>Select Bet Amount:</span>
+                <div style="display: flex; gap: 4px;">
+                    <button class="bet-btn active" id="bet-100" onclick="setBetAmount(100)">100</button>
+                    <button class="bet-btn" id="bet-1000" onclick="setBetAmount(1000)">1,000</button>
+                    <button class="bet-btn" id="bet-10000" onclick="setBetAmount(10000)">10,000</button>
+                    <button class="bet-btn" id="bet-30000" onclick="setBetAmount(30000)">30k</button>
+                </div>
+            </div>
+
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom: 6px;">Feed Mythical or Common Groups:</div>
             
             <div class="group-grid">
-                <div class="group-card" onclick="feedGroup('predator')">
-                    🦈 <b>Predators</b><span style="font-size:0.65rem; display:block; color:#94a3b8;">Shark, Orca, Octopus, Eel</span>
+                <div class="group-card" onclick="feedGroup('mythical')">
+                    🐉 <b>Mythical</b><span style="font-size:0.60rem; display:block; color:#94a3b8;">Dragon, Ghost, Leviathan, Mermaid</span>
                 </div>
-                <div class="group-card" onclick="feedGroup('dweller')">
-                    🐢 <b>Dwellers</b><span style="font-size:0.65rem; display:block; color:#94a3b8;">Turtle, Dolphin, Crab, Puffer</span>
+                <div class="group-card" onclick="feedGroup('common')">
+                    🐢 <b>Common</b><span style="font-size:0.60rem; display:block; color:#94a3b8;">Turtle, Crab, Snail, Fish</span>
                 </div>
             </div>
 
@@ -227,7 +263,7 @@
             <button class="spin-btn" id="perform-btn" onclick="startPerformance()" disabled>🎬 Start Deep Sea Stage</button>
             
             <div id="result-box">
-                <span id="result-text">Feed sea creatures to trigger the performance stage!</span>
+                <span id="result-text">Place bets and trigger the performance stage!</span>
             </div>
         </div>
 
@@ -240,10 +276,10 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="guild-progress"></div>
                 </div>
-                <span id="guild-progress-text" style="font-size: 0.75rem; color: #cbd5e1;">1,200 / 5,000 Biscuits Fed</span>
+                <span id="guild-progress-text" style="font-size: 0.75rem; color: #cbd5e1;">1,200 / 50,000 Biscuits Fed</span>
             </div>
             
-            <button class="spin-btn" style="background: linear-gradient(135deg, #059669, #047857);" onclick="contributeToGuild()">🍖 Feed Syndicate Feast (-50 Biscuits)</button>
+            <button class="spin-btn" style="background: linear-gradient(135deg, #059669, #047857);" onclick="contributeToGuild()">🍖 Feed Syndicate Feast (-1,000 Biscuits)</button>
             <div style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px;">Contribute to help your guild unlock shared community dividends!</div>
         </div>
     </div>
@@ -258,23 +294,33 @@
             }
         } catch (e) {}
 
-        var biscuits = 1000;
+        var biscuits = 50000;
         var fragments = 0;
         var guildTotalPool = 1200;
-        var guildGoal = 5000;
+        var guildGoal = 50000;
         var bets = {};
         var totalFeedThisRound = 0;
+        var currentSelectedBet = 100;
 
         var animals = [
-            { name: "Shark", emoji: "🦈", type: "predator", mult: 5 },
-            { name: "Orca", emoji: "🐋", type: "predator", mult: 5 },
-            { name: "Octopus", emoji: "🐙", type: "predator", mult: 4 },
-            { name: "Eel", emoji: "⚡", type: "predator", mult: 4 },
-            { name: "Turtle", emoji: "🐢", type: "dweller", mult: 3 },
-            { name: "Dolphin", emoji: "🐬", type: "dweller", mult: 3 },
-            { name: "Crab", emoji: "🦀", type: "dweller", mult: 3 },
-            { name: "Puffer", emoji: "🐡", type: "dweller", mult: 6 }
+            { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45 },
+            { name: "Ghost Shark", emoji: "👻", type: "mythical", mult: 25 },
+            { name: "Leviathan", emoji: "🌊", type: "mythical", mult: 15 },
+            { name: "Mermaid", emoji: "🧜‍♀️", type: "mythical", mult: 10 },
+            { name: "Turtle", emoji: "🐢", type: "common", mult: 5 },
+            { name: "Crab", emoji: "🦀", type: "common", mult: 5 },
+            { name: "Snail", emoji: "🐌", type: "common", mult: 5 },
+            { name: "Fish", emoji: "🐟", type: "common", mult: 5 }
         ];
+
+        function setBetAmount(amount) {
+            currentSelectedBet = amount;
+            document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('active'));
+            if (amount === 100) document.getElementById('bet-100').classList.add('active');
+            if (amount === 1000) document.getElementById('bet-1000').classList.add('active');
+            if (amount === 10000) document.getElementById('bet-10000').classList.add('active');
+            if (amount === 30000) document.getElementById('bet-30000').classList.add('active');
+        }
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -299,7 +345,7 @@
                 div.className = "animal-card";
                 div.onclick = function() { feedAnimal(anim.name); };
                 div.innerHTML = `
-                    ${fed > 0 ? `<div class="fed-badge">${fed}</div>` : ''}
+                    ${fed > 0 ? `<div class="fed-badge">${fed.toLocaleString()}</div>` : ''}
                     <span class="animal-emoji">${anim.emoji}</span>
                     <span class="animal-name">${anim.name}</span>
                     <span class="animal-mult">x${anim.mult}</span>
@@ -309,55 +355,56 @@
         }
 
         function feedAnimal(name) {
-            if (biscuits < 10) {
+            if (biscuits < currentSelectedBet) {
                 alert("Not enough biscuits!");
                 return;
             }
-            biscuits -= 10;
-            totalFeedThisRound += 10;
-            bets[name] = (bets[name] || 0) + 10;
+            biscuits -= currentSelectedBet;
+            totalFeedThisRound += currentSelectedBet;
+            bets[name] = (bets[name] || 0) + currentSelectedBet;
             updateUI();
         }
 
         function feedGroup(type) {
             var matching = animals.filter(a => a.type === type);
-            var cost = matching.length * 10;
-            if (biscuits < cost) {
+            var totalCost = matching.length * currentSelectedBet;
+            if (biscuits < totalCost) {
                 alert("Not enough biscuits for group feed!");
                 return;
             }
             matching.forEach(anim => {
-                biscuits -= 10;
-                totalFeedThisRound += 10;
-                bets[anim.name] = (bets[anim.name] || 0) + 10;
+                biscuits -= currentSelectedBet;
+                totalFeedThisRound += currentSelectedBet;
+                bets[anim.name] = (bets[anim.name] || 0) + currentSelectedBet;
             });
             updateUI();
         }
 
         function updateUI() {
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
-            document.getElementById("fragment-count").innerText = fragments;
+            document.getElementById("fragment-count").innerText = fragments.toLocaleString();
             document.getElementById("perform-btn").disabled = totalFeedThisRound === 0;
             initGrid();
         }
 
         function updateGuildUI() {
-            document.getElementById("guild-progress-text").innerText = guildTotalPool + " / " + guildGoal + " Biscuits Fed";
+            document.getElementById("guild-progress-text").innerText = guildTotalPool.toLocaleString() + " / " + guildGoal.toLocaleString() + " Biscuits Fed";
             var pct = Math.min(100, (guildTotalPool / guildGoal) * 100);
             document.getElementById("guild-progress").style.width = pct + "%";
         }
 
         function contributeToGuild() {
-            if (biscuits < 50) {
-                alert("You need at least 50 biscuits to contribute!");
+            var contribAmount = 1000;
+            if (biscuits < contribAmount) {
+                alert("You need at least 1,000 biscuits to contribute!");
                 return;
             }
-            biscuits -= 50;
-            guildTotalPool += 50;
+            biscuits -= contribAmount;
+            guildTotalPool += contribAmount;
             updateUI();
             updateGuildUI();
             if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            alert("🍖 Successfully contributed to the Syndicate Feast!");
+            alert("🍖 Successfully contributed 1,000 biscuits to the Syndicate Feast!");
         }
 
         function startPerformance() {
@@ -391,15 +438,16 @@
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Syndicate bonus applied. Payout: <b>+${payout}</b>`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Syndicate bonus applied. Payout: <b>+${payout.toLocaleString()}</b>`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                var earnedFrags = Math.floor(totalFeedThisRound / 10);
+                var earnedFrags = Math.max(1, Math.floor(totalFeedThisRound / 1000));
                 fragments += earnedFrags;
                 resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> Missed bet. Earned <b>${earnedFrags}</b> puzzle fragments.`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
+            // Bets are fully reset every round here:
             totalFeedThisRound = 0;
             bets = {};
             updateUI();

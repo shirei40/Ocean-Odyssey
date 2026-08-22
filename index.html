@@ -90,20 +90,24 @@
             border-radius: 8px;
             border: 1px solid #334155;
             margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-size: 0.8rem;
         }
+        .bet-buttons-container {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
         .bet-btn {
+            flex: 1;
             background: #334155;
             color: #f8fafc;
             border: none;
-            padding: 6px 10px;
+            padding: 6px 4px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            text-align: center;
         }
         .bet-btn.active {
             background: #0284c7;
@@ -239,12 +243,13 @@
         <!-- TAB 1: CARNIVAL STAGE -->
         <div id="tab-carnival" class="tab-content active">
             <div class="bet-selector">
-                <span>Select Bet Amount:</span>
-                <div style="display: flex; gap: 4px;">
+                <span>Select Bet Amount per click:</span>
+                <div class="bet-buttons-container">
+                    <button class="bet-btn" id="bet-1" onclick="setBetAmount(1)">1</button>
+                    <button class="bet-btn" id="bet-50" onclick="setBetAmount(50)">50</button>
                     <button class="bet-btn active" id="bet-100" onclick="setBetAmount(100)">100</button>
                     <button class="bet-btn" id="bet-1000" onclick="setBetAmount(1000)">1,000</button>
-                    <button class="bet-btn" id="bet-10000" onclick="setBetAmount(10000)">10,000</button>
-                    <button class="bet-btn" id="bet-30000" onclick="setBetAmount(30000)">30k</button>
+                    <button class="bet-btn" id="bet-5000" onclick="setBetAmount(5000)">5,000</button>
                 </div>
             </div>
 
@@ -316,10 +321,11 @@
         function setBetAmount(amount) {
             currentSelectedBet = amount;
             document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('active'));
+            if (amount === 1) document.getElementById('bet-1').classList.add('active');
+            if (amount === 50) document.getElementById('bet-50').classList.add('active');
             if (amount === 100) document.getElementById('bet-100').classList.add('active');
             if (amount === 1000) document.getElementById('bet-1000').classList.add('active');
-            if (amount === 10000) document.getElementById('bet-10000').classList.add('active');
-            if (amount === 30000) document.getElementById('bet-30000').classList.add('active');
+            if (amount === 5000) document.getElementById('bet-5000').classList.add('active');
         }
 
         function switchTab(tabName) {
@@ -447,7 +453,7 @@
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
-            // Bets are fully reset every round here:
+            // Reset all bets back to 0 for the next round
             totalFeedThisRound = 0;
             bets = {};
             updateUI();

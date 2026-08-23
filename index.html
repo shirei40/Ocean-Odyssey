@@ -231,7 +231,7 @@
         <div class="subtitle">Deep Sea Carnival & Guild Co-op</div>
 
         <div class="wallet-panel">
-            <span>🍪 Biscuits: <span id="biscuit-balance" class="balance-val">50,000</span></span>
+            <span>🐚 Pearls: <span id="biscuit-balance" class="balance-val">50,000</span></span>
         </div>
 
         <!-- Navigation Tabs -->
@@ -265,10 +265,10 @@
             </div>
 
             <div class="animal-grid" id="animal-grid"></div>
-            <button class="spin-btn" id="perform-btn" onclick="startPerformance()" disabled>🎬 Start Deep Sea Stage</button>
+            <button class="spin-btn" id="perform-btn" onclick="startPerformance()">🎬 Start Deep Sea Stage</button>
             
             <div id="result-box">
-                <span id="result-text">Place bets and trigger the performance stage!</span>
+                <span id="result-text">Place bets! Round auto-starts in <span id="countdown-num">15</span>s</span>
             </div>
         </div>
 
@@ -281,10 +281,10 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="guild-progress"></div>
                 </div>
-                <span id="guild-progress-text" style="font-size: 0.75rem; color: #cbd5e1;">1,200 / 50,000 Biscuits Fed</span>
+                <span id="guild-progress-text" style="font-size: 0.75rem; color: #cbd5e1;">1,200 / 50,000 Pearls Fed</span>
             </div>
             
-            <button class="spin-btn" style="background: linear-gradient(135deg, #059669, #047857);" onclick="contributeToGuild()">🍖 Feed Syndicate Feast (-1,000 Biscuits)</button>
+            <button class="spin-btn" style="background: linear-gradient(135deg, #059669, #047857);" onclick="contributeToGuild()">🐚 Feed Syndicate Feast (-1,000 Pearls)</button>
             <div style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px;">Contribute to help your guild unlock shared community dividends!</div>
         </div>
     </div>
@@ -369,7 +369,7 @@
         function feedAnimal(name) {
             if (roundActive) return;
             if (biscuits < currentSelectedBet) {
-                alert("Not enough biscuits!");
+                alert("Not enough pearls!");
                 return;
             }
             biscuits -= currentSelectedBet;
@@ -383,7 +383,7 @@
             var matching = animals.filter(a => a.type === type);
             var totalCost = matching.length * currentSelectedBet;
             if (biscuits < totalCost) {
-                alert("Not enough biscuits for group feed!");
+                alert("Not enough pearls for group feed!");
                 return;
             }
             matching.forEach(anim => {
@@ -396,12 +396,11 @@
 
         function updateUI() {
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
-            document.getElementById("perform-btn").disabled = totalFeedThisRound === 0 || roundActive;
             initGrid();
         }
 
         function updateGuildUI() {
-            document.getElementById("guild-progress-text").innerText = guildTotalPool.toLocaleString() + " / " + guildGoal.toLocaleString() + " Biscuits Fed";
+            document.getElementById("guild-progress-text").innerText = guildTotalPool.toLocaleString() + " / " + guildGoal.toLocaleString() + " Pearls Fed";
             var pct = Math.min(100, (guildTotalPool / guildGoal) * 100);
             document.getElementById("guild-progress").style.width = pct + "%";
         }
@@ -409,7 +408,7 @@
         function contributeToGuild() {
             var contribAmount = 1000;
             if (biscuits < contribAmount) {
-                alert("You need at least 1,000 biscuits to contribute!");
+                alert("You need at least 1,000 pearls to contribute!");
                 return;
             }
             biscuits -= contribAmount;
@@ -417,13 +416,32 @@
             updateUI();
             updateGuildUI();
             if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            alert("🍖 Successfully contributed 1,000 biscuits to the Syndicate Feast!");
+            alert("🐚 Successfully contributed 1,000 pearls to the Syndicate Feast!");
+        }
+
+        function startTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            timeLeft = 15;
+            var resultText = document.getElementById("result-text");
+            resultText.innerHTML = `Place bets! Round auto-starts in <span id="countdown-num">${timeLeft}</span>s`;
+
+            countdownInterval = setInterval(function() {
+                timeLeft--;
+                var numSpan = document.getElementById("countdown-num");
+                if (numSpan) {
+                    numSpan.innerText = timeLeft;
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    startPerformance();
+                }
+            }, 1000);
         }
 
         function startPerformance() {
-            if (totalFeedThisRound === 0 || roundActive) return;
-            roundActive = true;
+            if (roundActive) return;
             if (countdownInterval) clearInterval(countdownInterval);
+            roundActive = true;
 
             var btn = document.getElementById("perform-btn");
             var resultText = document.getElementById("result-text");
@@ -457,40 +475,33 @@
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 15s</span>`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> pearls!`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed.<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 15s</span>`;
+                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed this round.`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
 
-            // Start 15-second countdown timer
-            timeLeft = 15;
-            countdownInterval = setInterval(function() {
-                timeLeft--;
-                var timerSpan = document.getElementById("timer-text");
-                if (timerSpan) {
-                    timerSpan.innerText = `Next round auto-resets in ${timeLeft}s`;
-                }
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    resetRound();
-                }
-            }, 1000);
+            // Wait 4 seconds to let the player view results, then completely reset and restart the 15s timer for the next round
+            setTimeout(function() {
+                resetRound();
+            }, 4000);
         }
 
         function resetRound() {
-            if (countdownInterval) clearInterval(countdownInterval);
             bets = {};
             totalFeedThisRound = 0;
             roundActive = false;
-            document.getElementById("result-text").innerText = "Place bets and trigger the performance stage!";
+            document.getElementById("perform-btn").disabled = false;
             updateUI();
+            startTimer();
         }
 
+        // Initialize game state on load
         updateUI();
+        startTimer();
     </script>
 </body>
 </html>

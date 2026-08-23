@@ -467,12 +467,23 @@
             tbody.innerHTML = "";
             historyRecords.forEach(function(rec) {
                 var tr = document.createElement("tr");
+                var statusText = 'No Bet';
+                var statusColor = '#94a3b8';
+
+                if (rec.hasBet) {
+                    if (rec.won) {
+                        statusText = 'Won +' + rec.payout.toLocaleString();
+                        statusColor = '#4ade80';
+                    } else {
+                        statusText = 'Lost (-' + rec.totalBetAmount.toLocaleString() + ')';
+                        statusColor = '#f87171';
+                    }
+                }
+
                 tr.innerHTML = `
                     <td>#${rec.round}</td>
                     <td>${rec.winnerEmoji} ${rec.winnerName}</td>
-                    <td style="color: ${rec.hasBet ? (rec.won ? '#4ade80' : '#f87171') : '#94a3b8'}">
-                        ${rec.hasBet ? (rec.won ? 'Won +' + rec.payout.toLocaleString() : 'Lost') : 'No Bet'}
-                    </td>
+                    <td style="color: ${statusColor}">${statusText}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -559,19 +570,24 @@
 
             var userBet = bets[winner.name] || 0;
             var hasBet = totalFeedThisRound > 0;
+            var roundTotalBet = totalFeedThisRound;
             var payout = 0;
             var won = false;
             var resultText = document.getElementById("result-text");
 
             if (userBet > 0) {
-                // Strict Payout Calculation: Amount Betted * Multiplier (No guild bonus)
+                // Strict Payout Calculation: Amount Betted * Multiplier
                 payout = userBet * winner.mult;
                 biscuits += payout;
                 won = true;
                 resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> pearls!`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed this round.`;
+                if (hasBet) {
+                    resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> You lost <b>-${roundTotalBet.toLocaleString()}</b> pearls.`;
+                } else {
+                    resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed this round.`;
+                }
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
@@ -582,7 +598,8 @@
                 winnerEmoji: winner.emoji,
                 hasBet: hasBet,
                 won: won,
-                payout: payout
+                payout: payout,
+                totalBetAmount: roundTotalBet
             });
             if (historyRecords.length > 30) {
                 historyRecords.pop();

@@ -73,42 +73,41 @@
 
         .wallet-panel {
             background-color: #0f172a;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border: 1px solid #334155;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
         }
         .balance-val { color: #facc15; font-weight: bold; }
-        .oxygen-val { color: #38bdf8; font-weight: bold; }
 
         /* Training / Feed Cost Selector */
         .bet-selector {
             background: #0f172a;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #334155;
-            margin-bottom: 10px;
-            font-size: 0.75rem;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
         }
         .bet-buttons-container {
             display: flex;
             gap: 4px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
         .bet-btn {
             flex: 1;
             background: #334155;
             color: #f8fafc;
             border: none;
-            padding: 6px 2px;
+            padding: 6px 4px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-align: center;
         }
         .bet-btn.active {
@@ -119,18 +118,18 @@
         .group-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .group-card {
             background: #0f172a;
             border: 1px solid #334155;
-            padding: 6px;
+            padding: 8px;
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
         }
         .group-card:hover { border-color: #38bdf8; }
 
@@ -138,14 +137,14 @@
         .animal-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .animal-card {
             background: #0f172a;
             border: 2px solid #334155;
-            border-radius: 8px;
-            padding: 8px 2px;
+            border-radius: 10px;
+            padding: 10px 4px;
             text-align: center;
             cursor: pointer;
             position: relative;
@@ -155,21 +154,21 @@
         .animal-card.highlight {
             border-color: #facc15 !important;
             background: #312e81 !important;
-            box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
             transform: scale(1.05);
         }
-        .animal-emoji { font-size: 1.3rem; display: block; margin-bottom: 2px; }
-        .animal-name { font-size: 0.55rem; color: #cbd5e1; word-break: break-word; }
-        .animal-mult { font-size: 0.55rem; color: #4ade80; font-weight: bold; }
+        .animal-emoji { font-size: 1.5rem; display: block; margin-bottom: 2px; }
+        .animal-name { font-size: 0.58rem; color: #cbd5e1; word-break: break-word; }
+        .animal-mult { font-size: 0.6rem; color: #4ade80; font-weight: bold; }
         .fed-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -5px;
+            right: -5px;
             background: #f43f5e;
             color: white;
-            font-size: 0.5rem;
-            padding: 1px 3px;
-            border-radius: 8px;
+            font-size: 0.55rem;
+            padding: 2px 4px;
+            border-radius: 10px;
             font-weight: bold;
         }
 
@@ -177,9 +176,9 @@
             background: linear-gradient(135deg, #059669, #047857);
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: bold;
             width: 100%;
             cursor: pointer;
@@ -187,31 +186,31 @@
 
         #result-box {
             background-color: #0f172a;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #334155;
-            min-height: 40px;
+            min-height: 45px;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 8px;
+            margin-top: 10px;
             flex-direction: column;
         }
 
         /* Bestiary & History Styling */
         .bestiary-list, .history-container {
-            margin-top: 10px;
+            margin-top: 15px;
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 8px;
-            max-height: 190px;
+            padding: 10px;
+            max-height: 180px;
             overflow-y: auto;
         }
         .section-title {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #38bdf8;
             font-weight: bold;
             margin-bottom: 6px;
@@ -220,11 +219,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-align: left;
         }
         th, td {
-            padding: 4px;
+            padding: 4px 6px;
             border-bottom: 1px solid #1e293b;
         }
         th { color: #94a3b8; }
@@ -233,22 +232,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px;
+            padding: 8px;
             border-bottom: 1px solid #334155;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
         }
 
         .social-btn {
             background: #0284c7;
             color: white;
             border: none;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: bold;
             width: 100%;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -259,7 +258,6 @@
 
         <div class="wallet-panel">
             <span>🐚 Pearls: <span id="pearl-balance" class="balance-val">50,000</span></span>
-            <span>🤿 Oxygen: <span id="oxygen-balance" class="oxygen-val">10/10</span></span>
         </div>
 
         <!-- Navigation Tabs -->
@@ -279,17 +277,18 @@
                     <button class="bet-btn" id="train-50" onclick="setTrainAmount(50)">50</button>
                     <button class="bet-btn active" id="train-100" onclick="setTrainAmount(100)">100</button>
                     <button class="bet-btn" id="train-1000" onclick="setTrainAmount(1000)">1,000</button>
+                    <button class="bet-btn" id="train-5000" onclick="setTrainAmount(5000)">5,000</button>
                 </div>
             </div>
 
-            <div style="font-size:0.7rem; color:#94a3b8; margin-bottom: 5px;">Support Squad or Individual Act:</div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom: 6px;">Support Squad or Individual Act:</div>
             
             <div class="group-grid">
                 <div class="group-card" onclick="supportGroup('mythical')">
-                    🐉 <b>Mythical Group</b>
+                    🐉 <b>Mythical Group</b><span style="font-size:0.60rem; display:block; color:#94a3b8;">Dragon, Ghost, Leviathan, Mermaid</span>
                 </div>
                 <div class="group-card" onclick="supportGroup('common')">
-                    🐢 <b>Common Group</b>
+                    🐢 <b>Common Group</b><span style="font-size:0.60rem; display:block; color:#94a3b8;">Turtle, Crab, Snail, Fish</span>
                 </div>
             </div>
 
@@ -306,7 +305,7 @@
             <div class="bestiary-list" id="bestiary-container">
                 <!-- Populated via JS -->
             </div>
-            <div style="font-size: 0.65rem; color: #94a3b8; text-align: center; margin-top: 6px;">Support acts when they perform to collect fragment stars and permanently level up rewards!</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px;">Support acts when they perform to collect fragment stars and permanently level up rewards!</div>
         </div>
 
         <!-- TAB 3: HISTORY RECORDS -->
@@ -314,16 +313,16 @@
             <div class="section-title">Performance History</div>
             <div class="history-container">
                 <table>
-                        <thead>
-                            <tr>
-                                <th>Round</th>
-                                <th>Star Act</th>
-                                <th>Outcome</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <tr><td colspan="3" style="text-align:center; color:#94a3b8;">No records yet</td></tr>
-                        </tbody>
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Star Act</th>
+                            <th>Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr><td colspan="3" style="text-align:center; color:#94a3b8;">No records yet</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -331,13 +330,13 @@
         <!-- TAB 4: SOCIAL SQUAD -->
         <div id="tab-social" class="tab-content">
             <div class="section-title">Abyss Squad & Daily Bonus</div>
-            <div style="background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.75rem; margin-bottom: 8px;">
-                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 4px;">Daily Login Streak</div>
-                <div id="streak-text" style="color: #cbd5e1; margin-bottom: 8px;">Streak: Day 1 (Claimed)</div>
-                <button class="spin-btn" id="claim-streak-btn" onclick="claimDailyStreak()" style="padding: 6px; font-size: 0.7rem;">🎁 Claim Daily Oxygen & Pearls</button>
+            <div style="background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; text-align: center; font-size: 0.8rem; margin-bottom: 10px;">
+                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 6px;">Daily Login Streak</div>
+                <div id="streak-text" style="color: #cbd5e1; margin-bottom: 10px;">Streak: Day 1 (Ready)</div>
+                <button class="spin-btn" onclick="claimDailyStreak()" style="padding: 8px; font-size: 0.75rem;">🎁 Claim Daily Pearls (+5,000)</button>
             </div>
             <button class="social-btn" onclick="inviteSquadMember()">🔗 Invite Friends via Telegram Chat</button>
-            <div style="font-size: 0.65rem; color: #94a3b8; text-align: center; margin-top: 6px;">Invite squad mates to your chat to unlock group performance multipliers!</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px;">Invite squad mates to your chat to unlock group performance multipliers!</div>
         </div>
     </div>
 
@@ -352,8 +351,6 @@
         } catch (e) {}
 
         var pearls = 50000;
-        var oxygen = 10;
-        var maxOxygen = 10;
         var supports = {};
         var totalSupportThisRound = 0;
         var currentTrainAmount = 100;
@@ -383,6 +380,7 @@
             if (amount === 50) document.getElementById('train-50').classList.add('active');
             if (amount === 100) document.getElementById('train-100').classList.add('active');
             if (amount === 1000) document.getElementById('train-1000').classList.add('active');
+            if (amount === 5000) document.getElementById('train-5000').classList.add('active');
         }
 
         function switchTab(tabName) {
@@ -430,16 +428,11 @@
 
         function supportAnimal(name) {
             if (roundActive) return;
-            if (oxygen < 1) {
-                alert("Out of Oxygen! Wait for recovery or check Daily Squad bonuses.");
-                return;
-            }
             if (pearls < currentTrainAmount) {
-                alert("Not enough pearls for training investment!");
+                alert("Not enough pearls!");
                 return;
             }
             pearls -= currentTrainAmount;
-            oxygen -= 1;
             totalSupportThisRound += currentTrainAmount;
             supports[name] = (supports[name] || 0) + currentTrainAmount;
             updateUI();
@@ -449,17 +442,12 @@
             if (roundActive) return;
             var matching = animals.filter(a => a.type === type);
             var totalCostPearls = matching.length * currentTrainAmount;
-            if (oxygen < matching.length) {
-                alert("Not enough oxygen tanks for group training!");
-                return;
-            }
             if (pearls < totalCostPearls) {
                 alert("Not enough pearls for group training!");
                 return;
             }
             matching.forEach(anim => {
                 pearls -= currentTrainAmount;
-                oxygen -= 1;
                 totalSupportThisRound += currentTrainAmount;
                 supports[anim.name] = (supports[anim.name] || 0) + currentTrainAmount;
             });
@@ -468,7 +456,6 @@
 
         function updateUI() {
             document.getElementById("pearl-balance").innerText = pearls.toLocaleString();
-            document.getElementById("oxygen-balance").innerText = oxygen + "/" + maxOxygen;
             initGrid();
         }
 
@@ -503,8 +490,8 @@
                         statusText = 'Starred! +' + rec.reward.toLocaleString();
                         statusColor = '#4ade80';
                     } else {
-                        statusText = 'Trained (-' + rec.totalSupport.toLocaleString() + ' XP)';
-                        statusColor = '#38bdf8';
+                        statusText = 'Trained (-' + rec.totalSupport.toLocaleString() + ')';
+                        statusColor = '#f87171';
                     }
                 }
 
@@ -520,14 +507,13 @@
         function claimDailyStreak() {
             var today = new Date().toDateString();
             if (lastClaimDate === today) {
-                alert("Already claimed today's squad bonus! Come back tomorrow.");
+                alert("Already claimed today's bonus! Come back tomorrow.");
                 return;
             }
             lastClaimDate = today;
             pearls += 5000;
-            oxygen = maxOxygen;
             updateUI();
-            alert("🎁 Claimed daily bonus: +5,000 Pearls & Refilled Oxygen Tanks!");
+            alert("🎁 Claimed daily bonus: +5,000 Pearls!");
             document.getElementById("streak-text").innerText = "Streak: Claimed Today!";
         }
 
@@ -621,11 +607,11 @@
                 reward = userSupport * effectiveMult;
                 pearls += reward;
                 matched = true;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Training Reward: <b>+${reward.toLocaleString()}</b> pearls!`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Reward: <b>+${reward.toLocaleString()}</b> pearls!`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
                 if (hasSupported) {
-                    resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> Training XP logged for the show.`;
+                    resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> You lost (-${roundTotalSupport.toLocaleString()}) pearls.`;
                 } else {
                     resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No acts supported this show.`;
                 }
@@ -646,13 +632,7 @@
                 historyRecords.pop();
             }
 
-            // Oxygen Regeneration over round completion ticks
-            if (oxygen < maxOxygen) {
-                oxygen = Math.min(maxOxygen, oxygen + 2);
-            }
-
             document.getElementById("pearl-balance").innerText = pearls.toLocaleString();
-            document.getElementById("oxygen-balance").innerText = oxygen + "/" + maxOxygen;
 
             setTimeout(function() {
                 resetRound();

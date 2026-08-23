@@ -307,15 +307,16 @@
         var countdownInterval = null;
         var timeLeft = 15;
 
+        // Animals with weighted drop rates (weight values determine relative frequency)
         var animals = [
-            { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45 },
-            { name: "Ghost Shark", emoji: "👻", type: "mythical", mult: 25 },
-            { name: "Leviathan", emoji: "🌊", type: "mythical", mult: 15 },
-            { name: "Mermaid", emoji: "🧜‍♀️", type: "mythical", mult: 10 },
-            { name: "Turtle", emoji: "🐢", type: "common", mult: 5 },
-            { name: "Crab", emoji: "🦀", type: "common", mult: 5 },
-            { name: "Snail", emoji: "🐌", type: "common", mult: 5 },
-            { name: "Fish", emoji: "🐟", type: "common", mult: 5 }
+            { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45, weight: 2 },
+            { name: "Ghost Shark", emoji: "👻", type: "mythical", mult: 25, weight: 4 },
+            { name: "Leviathan", emoji: "🌊", type: "mythical", mult: 15, weight: 8 },
+            { name: "Mermaid", emoji: "🧜‍♀️", type: "mythical", mult: 10, weight: 12 },
+            { name: "Turtle", emoji: "🐢", type: "common", mult: 5, weight: 20 },
+            { name: "Crab", emoji: "🦀", type: "common", mult: 5, weight: 20 },
+            { name: "Snail", emoji: "🐌", type: "common", mult: 5, weight: 20 },
+            { name: "Fish", emoji: "🐟", type: "common", mult: 5, weight: 20 }
         ];
 
         function setBetAmount(amount) {
@@ -444,26 +445,41 @@
             var resultText = document.getElementById("result-text");
             resultText.innerHTML = "🎬 The stage is performing...";
 
+            // 1. Determine the winner in advance (backend logic separate from visuals)
+            var winningAnimal = pickWeightedWinner();
+
             var cards = document.querySelectorAll(".animal-card");
             var step = 0;
             
+            // 2. Purely visual highlight animation loop
             var interval = setInterval(function() {
-                cards.exports = cards.forEach ? cards : cards; // safety fallback
                 cards.forEach(c => c.classList.remove("highlight"));
                 var idx = Math.floor(Math.random() * animals.length);
                 cards[idx].classList.add("highlight");
                 step++;
                 if (step >= 14) {
                     clearInterval(interval);
-                    resolveStage();
+                    resolveStage(winningAnimal);
                 }
             }, 90);
         }
 
-        function resolveStage() {
-            var winIdx = Math.floor(Math.random() * animals.length);
-            var winner = animals[winIdx];
+        function pickWeightedWinner() {
+            // Calculate total weight sum
+            var totalWeight = animals.reduce((sum, anim) => sum + anim.weight, 0);
+            var randomVal = Math.random() * totalWeight;
+            var cumulative = 0;
             
+            for (var i = 0; i < animals.length; i++) {
+                cumulative += animals[i].weight;
+                if (randomVal < cumulative) {
+                    return animals[i];
+                }
+            }
+            return animals[animals.length - 1];
+        }
+
+        function resolveStage(winner) {
             initGrid(winner.name);
 
             var userBet = bets[winner.name] || 0;

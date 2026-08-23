@@ -307,7 +307,7 @@
         var currentSelectedBet = 100;
         var roundActive = false;
         var countdownInterval = null;
-        var timeLeft = 30;
+        var timeLeft = 15;
 
         var animals = [
             { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45 },
@@ -449,7 +449,6 @@
             var winIdx = Math.floor(Math.random() * animals.length);
             var winner = animals[winIdx];
             
-            // Re-render grid to highlight the winner while keeping current bets visible
             initGrid(winner.name);
 
             var userBet = bets[winner.name] || 0;
@@ -458,17 +457,17 @@
             if (userBet > 0) {
                 var payout = Math.floor(userBet * winner.mult * 1.15); // Guild 15% bonus applied
                 biscuits += payout;
-                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 30s</span>`;
+                resultText.innerHTML = `🎉 <b>${winner.emoji} ${winner.name} starred!</b> Payout: <b>+${payout.toLocaleString()}</b> biscuits!<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 15s</span>`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
             } else {
-                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed.<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 30s</span>`;
+                resultText.innerHTML = `🌊 <b>${winner.emoji} ${winner.name} starred!</b> No bet placed.<br><span id="timer-text" style="font-size:0.7rem; color:#38bdf8; margin-top:4px;">Next round auto-resets in 15s</span>`;
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
 
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
 
-            // Start 30-second countdown timer
-            timeLeft = 30;
+            // Start 15-second countdown timer
+            timeLeft = 15;
             countdownInterval = setInterval(function() {
                 timeLeft--;
                 var timerSpan = document.getElementById("timer-text");

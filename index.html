@@ -171,7 +171,7 @@
         }
 
         .spin-btn {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            background: linear-gradient(135deg, #059669, #047857);
             color: white;
             border: none;
             padding: 12px;
@@ -182,7 +182,6 @@
             cursor: pointer;
             transition: filter 0.2s;
         }
-        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #result-box {
             background-color: #0f172a;
@@ -265,7 +264,6 @@
             </div>
 
             <div class="animal-grid" id="animal-grid"></div>
-            <button class="spin-btn" id="perform-btn" onclick="startPerformance()">🎬 Start Deep Sea Stage</button>
             
             <div id="result-box">
                 <span id="result-text">Place bets! Round auto-starts in <span id="countdown-num">15</span>s</span>
@@ -284,7 +282,7 @@
                 <span id="guild-progress-text" style="font-size: 0.75rem; color: #cbd5e1;">1,200 / 50,000 Pearls Fed</span>
             </div>
             
-            <button class="spin-btn" style="background: linear-gradient(135deg, #059669, #047857);" onclick="contributeToGuild()">🐚 Feed Syndicate Feast (-1,000 Pearls)</button>
+            <button class="spin-btn" onclick="contributeToGuild()">🐚 Feed Syndicate Feast (-1,000 Pearls)</button>
             <div style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px;">Contribute to help your guild unlock shared community dividends!</div>
         </div>
     </div>
@@ -443,15 +441,14 @@
             if (countdownInterval) clearInterval(countdownInterval);
             roundActive = true;
 
-            var btn = document.getElementById("perform-btn");
             var resultText = document.getElementById("result-text");
-            btn.disabled = true;
             resultText.innerHTML = "🎬 The stage is performing...";
 
             var cards = document.querySelectorAll(".animal-card");
             var step = 0;
             
             var interval = setInterval(function() {
+                cards.exports = cards.forEach ? cards : cards; // safety fallback
                 cards.forEach(c => c.classList.remove("highlight"));
                 var idx = Math.floor(Math.random() * animals.length);
                 cards[idx].classList.add("highlight");
@@ -484,7 +481,7 @@
 
             document.getElementById("biscuit-balance").innerText = biscuits.toLocaleString();
 
-            // Wait 4 seconds to let the player view results, then completely reset and restart the 15s timer for the next round
+            // Wait 4 seconds to display results, then reset for the next 15s round cycle
             setTimeout(function() {
                 resetRound();
             }, 4000);
@@ -494,7 +491,6 @@
             bets = {};
             totalFeedThisRound = 0;
             roundActive = false;
-            document.getElementById("perform-btn").disabled = false;
             updateUI();
             startTimer();
         }

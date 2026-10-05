@@ -361,16 +361,43 @@
         var roundCounter = 0;
         var lastClaimDate = "";
 
+        // ==========================================
+        // ⚙️ DYNAMIC CONFIGURATION PANEL
+        // You can tweak these values anytime to adjust 
+        // win rates (weights) and payout multipliers.
+        // ==========================================
+        var GAME_CONFIG = {
+            mythical: {
+                weight: 1,   // Lower this number to make Mythicals win less frequently (e.g., set to 0.5 or 0.2)
+                mult: 45     // Payout multiplier base
+            },
+            common: {
+                weight: 25,  // Higher this number to make Commons win more frequently
+                mult: 5      // Payout multiplier base
+            }
+        };
+
         var animals = [
-            { name: "Sea Dragon", emoji: "🐉", type: "mythical", mult: 45, weight: 2, fragments: 0, level: 1 },
-            { name: "Ghost Shark", emoji: "👻", type: "mythical", mult: 25, weight: 4, fragments: 0, level: 1 },
-            { name: "Leviathan", emoji: "🌊", type: "mythical", mult: 15, weight: 8, fragments: 0, level: 1 },
-            { name: "Mermaid", emoji: "🧜‍♀️", type: "mythical", mult: 10, weight: 12, fragments: 0, level: 1 },
-            { name: "Turtle", emoji: "🐢", type: "common", mult: 5, weight: 20, fragments: 0, level: 1 },
-            { name: "Crab", emoji: "🦀", type: "common", mult: 5, weight: 20, fragments: 0, level: 1 },
-            { name: "Snail", emoji: "🐌", type: "common", mult: 5, weight: 20, fragments: 0, level: 1 },
-            { name: "Fish", emoji: "🐟", type: "common", mult: 5, weight: 20, fragments: 0, level: 1 }
+            // Mythical Group (Lower individual weights = lower overall win chance)
+            { name: "Sea Dragon", emoji: "🐉", type: "mythical", multConfigKey: "mythical", weight: 1.5, fragments: 0, level: 1 },
+            { name: "Ghost Shark", emoji: "👻", type: "mythical", multConfigKey: "mythical", weight: 2.0, fragments: 0, level: 1 },
+            { name: "Leviathan", emoji: "🌊", type: "mythical", multConfigKey: "mythical", weight: 3.0, fragments: 0, level: 1 },
+            { name: "Mermaid", emoji: "🧜‍♀️", type: "mythical", multConfigKey: "mythical", weight: 3.5, fragments: 0, level: 1 },
+            
+            // Common Group (Higher individual weights = higher overall win chance)
+            { name: "Turtle", emoji: "🐢", type: "common", multConfigKey: "common", weight: 20, fragments: 0, level: 1 },
+            { name: "Crab", emoji: "🦀", type: "common", multConfigKey: "common", weight: 20, fragments: 0, level: 1 },
+            { name: "Snail", emoji: "🐌", type: "common", multConfigKey: "common", weight: 20, fragments: 0, level: 1 },
+            { name: "Fish", emoji: "🐟", type: "common", multConfigKey: "common", weight: 20, fragments: 0, level: 1 }
         ];
+
+        // Function to dynamically update config values programmatically if needed
+        function updateGameConfig(groupType, newWeight, newMult) {
+            if (GAME_CONFIG[groupType]) {
+                if (newWeight !== undefined) GAME_CONFIG[groupType].weight = newWeight;
+                if (newMult !== undefined) GAME_CONFIG[groupType].mult = newMult;
+            }
+        }
 
         function setTrainAmount(amount) {
             if (roundActive) return;
@@ -409,7 +436,8 @@
             grid.innerHTML = "";
             animals.forEach(function(anim) {
                 var sup = supports[anim.name] || 0;
-                var effectiveMult = anim.mult + (anim.level - 1) * 2;
+                var baseMult = GAME_CONFIG[anim.multConfigKey].mult;
+                var effectiveMult = baseMult + (anim.level - 1) * 2;
                 var div = document.createElement("div");
                 div.className = "animal-card";
                 if (anim.name === highlightName) {
@@ -572,12 +600,18 @@
         }
 
         function pickWeightedWinner() {
-            var totalWeight = animals.reduce((sum, anim) => sum + anim.weight, 0);
+            // Calculate total weight dynamically based on GAME_CONFIG configuration
+            var totalWeight = animals.reduce((sum, anim) => {
+                var groupWeightMultiplier = GAME_CONFIG[anim.multConfigKey].weight;
+                return sum + (anim.weight * groupWeightMultiplier);
+            }, 0);
+
             var randomVal = Math.random() * totalWeight;
             var cumulative = 0;
             
             for (var i = 0; i < animals.length; i++) {
-                cumulative += animals[i].weight;
+                var groupWeightMultiplier = GAME_CONFIG[animals[i].multConfigKey].weight;
+                cumulative += (animals[i].weight * groupWeightMultiplier);
                 if (randomVal < cumulative) {
                     return animals[i];
                 }
@@ -603,7 +637,8 @@
             }
 
             if (userSupport > 0) {
-                var effectiveMult = winner.mult + (winner.level - 1) * 2;
+                var baseMult = GAME_CONFIG[winner.multConfigKey].mult;
+                var effectiveMult = baseMult + (winner.level - 1) * 2;
                 reward = userSupport * effectiveMult;
                 pearls += reward;
                 matched = true;
